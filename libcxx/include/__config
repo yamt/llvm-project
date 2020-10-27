@@ -10,10 +10,8 @@
 #ifndef _LIBCPP_CONFIG
 #define _LIBCPP_CONFIG
 
-/*
- * Note: NuttX sim is a program for the host OS.
- * eg. NuttX sim on macOS is likely built with __APPLE__.
- */
+// Note: NuttX sim is a program for the host OS.
+// eg. NuttX sim on macOS is likely built with __APPLE__.
 #if defined(__NuttX__)
 #undef __linux__
 #undef __APPLE__
@@ -22,11 +20,9 @@
 #undef _WIN32
 #undef __sun__
 #undef _AIX
-/*
- * For the current use of the __unix__ macro in this library,
- * NuttX is not __unix__.
- * This might need to be revisited in future.
- */
+// For the current use of the __unix__ macro in this library,
+// NuttX is not __unix__.
+// This might need to be revisited in future.
 #undef __unix__
 #endif
 
