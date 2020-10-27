@@ -13,15 +13,6 @@
 #if defined(__NuttX__)
 #include <support/xlocale/__posix_l_fallback.h>
 #include <support/xlocale/__strtonum_fallback.h>
-
-#define _LIBCPP_PROVIDES_DEFAULT_RUNE_TABLE
-
-#undef __linux__
-#undef __unix__
-#undef __APPLE__
-#undef __GLIBC__
-#undef _NEWLIB_VERSION
-
 #endif // __NuttX__
 
 #endif
