@@ -481,12 +481,8 @@ private:
       if (TheLine->Last->is(TT_EnumLBrace)) {
         ShouldMerge = Style.AllowShortEnumsOnASingleLine;
       } else if (TheLine->Last->isOneOf(TT_ClassLBrace, TT_StructLBrace)) {
-        // NOTE: We use AfterClass (whereas AfterStruct exists) for both classes
-        // and structs, but it seems that wrapping is still handled correctly
-        // elsewhere.
-        ShouldMerge = !Style.BraceWrapping.AfterClass ||
-                      (NextLine.First->is(tok::r_brace) &&
-                       !Style.BraceWrapping.SplitEmptyRecord);
+        ShouldMerge = NextLine.First->is(tok::r_brace) &&
+                      !Style.BraceWrapping.SplitEmptyRecord;
       } else {
         // Try to merge a block with left brace unwrapped that wasn't yet
         // covered.

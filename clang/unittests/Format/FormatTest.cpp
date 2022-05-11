@@ -13011,6 +13011,79 @@ TEST_F(FormatTest, SplitEmptyFunctionButNotRecord) {
                Style);
 }
 
+TEST_F(FormatTest, SplitEmptyRecord) {
+  FormatStyle Style = getLLVMStyleWithColumns(40);
+  Style.AllowShortFunctionsOnASingleLine = FormatStyle::SFS_None;
+  Style.BreakBeforeBraces = FormatStyle::BS_Custom;
+
+  Style.BraceWrapping.AfterFunction = true;
+  Style.BraceWrapping.SplitEmptyFunction = true;
+
+  // SplitEmptyRecord = true
+
+  Style.BraceWrapping.SplitEmptyRecord = true;
+
+  Style.BraceWrapping.AfterClass = true;
+  Style.BraceWrapping.AfterStruct = true;
+  verifyFormat("class C\n"
+               "{\n"
+               "};", Style);
+  verifyFormat("struct C\n"
+               "{\n"
+               "};", Style);
+
+  Style.BraceWrapping.AfterClass = true;
+  Style.BraceWrapping.AfterStruct = false;
+  verifyFormat("class C\n"
+               "{\n"
+               "};", Style);
+  verifyFormat("struct C {\n"
+               "};", Style);
+
+  Style.BraceWrapping.AfterClass = false;
+  Style.BraceWrapping.AfterStruct = true;
+  verifyFormat("class C {\n"
+               "};", Style);
+  verifyFormat("struct C\n"
+               "{\n"
+               "};", Style);
+
+  Style.BraceWrapping.AfterClass = false;
+  Style.BraceWrapping.AfterStruct = false;
+  verifyFormat("class C {\n"
+               "};", Style);
+  verifyFormat("struct C {\n"
+               "};", Style);
+
+  // SplitEmptyRecord = false
+
+  Style.BraceWrapping.SplitEmptyRecord = false;
+
+  Style.BraceWrapping.AfterClass = true;
+  Style.BraceWrapping.AfterStruct = true;
+  verifyFormat("class C\n"
+               "{};", Style);
+  verifyFormat("struct C\n"
+               "{};", Style);
+
+  Style.BraceWrapping.AfterClass = true;
+  Style.BraceWrapping.AfterStruct = false;
+  verifyFormat("class C\n"
+               "{};", Style);
+  verifyFormat("struct C {};", Style);
+
+  Style.BraceWrapping.AfterClass = false;
+  Style.BraceWrapping.AfterStruct = true;
+  verifyFormat("class C {};", Style);
+  verifyFormat("struct C\n"
+               "{};", Style);
+
+  Style.BraceWrapping.AfterClass = false;
+  Style.BraceWrapping.AfterStruct = false;
+  verifyFormat("class C {};", Style);
+  verifyFormat("struct C {};", Style);
+}
+
 TEST_F(FormatTest, KeepShortFunctionAfterPPElse) {
   FormatStyle Style = getLLVMStyle();
   Style.AllowShortFunctionsOnASingleLine = FormatStyle::SFS_All;
