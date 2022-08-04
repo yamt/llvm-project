@@ -334,6 +334,11 @@ ConstString ProcessGDBRemote::GetPluginName() { return GetPluginNameStatic(); }
 
 uint32_t ProcessGDBRemote::GetPluginVersion() { return 1; }
 
+std::shared_ptr<ThreadGDBRemote>
+ProcessGDBRemote::CreateThread(lldb::tid_t tid) {
+  return std::make_shared<ThreadGDBRemote>(*this, tid);
+}
+
 bool ProcessGDBRemote::ParsePythonTargetDefinition(
     const FileSpec &target_definition_fspec) {
   ScriptInterpreter *interpreter =
@@ -1626,7 +1631,7 @@ bool ProcessGDBRemote::DoUpdateThreadList(ThreadList &old_thread_list,
       ThreadSP thread_sp(
           old_thread_list_copy.RemoveThreadByProtocolID(tid, false));
       if (!thread_sp) {
-        thread_sp = std::make_shared<ThreadGDBRemote>(*this, tid);
+        thread_sp = CreateThread(tid);
         LLDB_LOGV(log, "Making new thread: {0} for thread ID: {1:x}.",
                   thread_sp.get(), thread_sp->GetID());
       } else {
@@ -1742,7 +1747,7 @@ ThreadSP ProcessGDBRemote::SetThreadStopInfo(
 
       if (!thread_sp) {
         // Create the thread if we need to
-        thread_sp = std::make_shared<ThreadGDBRemote>(*this, tid);
+        thread_sp = CreateThread(tid);
         m_thread_list_real.AddThread(thread_sp);
       }
     }
