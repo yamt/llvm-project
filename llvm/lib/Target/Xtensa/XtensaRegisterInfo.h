@@ -43,6 +43,10 @@ public:
   bool trackLivenessAfterRegAlloc(const MachineFunction &) const override {
     return true;
   }
+  
+  bool supportsBackwardScavenger() const override {
+    return true;
+  }
 
   const uint16_t *
   getCalleeSavedRegs(const MachineFunction *MF = 0) const override;
@@ -56,8 +60,10 @@ public:
 
 private:
   bool eliminateFI(MachineBasicBlock::iterator II, unsigned OpNo,
-                   int FrameIndex, uint64_t StackSize,
-                   int64_t SPOffset) const;
+                   int FrameIndex, uint64_t StackSize, int64_t SPOffset,
+                   RegScavenger *RS) const;
+
+  bool requiresFrameIndexReplacementScavenging(const MachineFunction &MF) const override;
 };
 
 } // end namespace llvm
