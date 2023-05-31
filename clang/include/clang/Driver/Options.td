@@ -192,6 +192,8 @@ def m_x86_Features_Group : OptionGroup<"<x86 features group>">,
                            Group<m_Group>, Flags<[CoreOption]>, DocName<"X86">;
 def m_riscv_Features_Group : OptionGroup<"<riscv features group>">,
                              Group<m_Group>, DocName<"RISC-V">;
+def m_xtensa_Features_Group : OptionGroup<"<xtensa features group>">,
+                              Group<m_Group>, Flags<[CoreOption]>, DocName<"Xtensa">;
 
 def m_libc_Group : OptionGroup<"<m libc group>">, Group<m_mips_Features_Group>,
                    Flags<[HelpHidden]>;
@@ -5096,6 +5098,13 @@ def mno_gather : Flag<["-"], "mno-gather">, Group<m_x86_Features_Group>,
                  HelpText<"Disable generation of gather instructions in auto-vectorization(x86 only)">;
 def mno_scatter : Flag<["-"], "mno-scatter">, Group<m_x86_Features_Group>,
                   HelpText<"Disable generation of scatter instructions in auto-vectorization(x86 only)">;
+
+// Xtensa feature flags
+def malways_memw : Flag<["-"], "malways-memw">, Group<m_xtensa_Features_Group>;
+def mfix_esp32_psram_cache_issue : Flag<["-"], "mfix-esp32-psram-cache-issue">, Group<m_xtensa_Features_Group>;
+def mfix_esp32_psram_cache_strategy_EQ : Joined<["-"], "mfix-esp32-psram-cache-strategy=">, Group<m_xtensa_Features_Group>,
+    HelpText<" Psram cache fix strategies : memw, nops">,
+    Values<"memw, nops">;
 
 // These are legacy user-facing driver-level option spellings. They are always
 // aliases for options that are spelled using the more common Unix / GNU flag
