@@ -13640,7 +13640,8 @@ private:
                                            CallExpr *TheCall);
   bool CheckNVPTXBuiltinFunctionCall(const TargetInfo &TI, unsigned BuiltinID,
                                      CallExpr *TheCall);
-
+  bool CheckXtensaBuiltinFunctionCall(unsigned BuiltinID, CallExpr *TheCall);
+ 
   bool SemaBuiltinVAStart(unsigned BuiltinID, CallExpr *TheCall);
   bool SemaBuiltinVAStartARMMicrosoft(CallExpr *Call);
   bool SemaBuiltinUnorderedCompare(CallExpr *TheCall);
