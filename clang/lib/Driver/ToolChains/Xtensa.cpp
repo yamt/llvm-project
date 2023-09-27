@@ -30,19 +30,17 @@ using namespace clang::driver::toolchains;
 using namespace clang;
 using namespace llvm::opt;
 
-using tools::addMultilibFlag;
-
 /// Xtensa Toolchain
 XtensaToolChain::XtensaToolChain(const Driver &D, const llvm::Triple &Triple,
                                  const ArgList &Args)
     : Generic_ELF(D, Triple, Args) {
 
   std::vector<std::string> ExtraAliases;
+  SmallString<128> CpuName;
 
   if (Triple.getVendor() == llvm::Triple::Espressif ||
       Triple.getVendor() == llvm::Triple::UnknownVendor) {
     Arg *mcpuArg = Args.getLastArg(options::OPT_mcpu_EQ);
-    SmallString<128> CpuName;
     if (mcpuArg)
       CpuName = mcpuArg->getValue();
     else if (Triple.getVendor() == llvm::Triple::Espressif)
@@ -133,6 +131,14 @@ XtensaToolChain::XtensaToolChain(const Driver &D, const llvm::Triple &Triple,
     SmallString<128> SysRoot(computeSysRoot());
     llvm::sys::path::append(SysRoot, "lib");
     getFilePaths().push_back(SysRoot.c_str());
+  }
+
+  if (getTriple().getVendor() == llvm::Triple::Espressif) {
+    // TODO: need to detect multilibs when GCC installation is not available
+    addEspMultilibsPaths(D, Multilibs, SelectedMultilibs.back(), CpuName,
+                          D.getInstalledDir(), getLibraryPaths());
+    addEspMultilibsPaths(D, Multilibs, SelectedMultilibs.back(), CpuName,
+                          D.getInstalledDir(), getFilePaths());
   }
 }
 
