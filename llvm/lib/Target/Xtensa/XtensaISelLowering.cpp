@@ -58,6 +58,11 @@ template <typename VT> static bool isVecVT(VT ValVT) {
 // It's simplified version, production implimentation must
 // resolve a functions in ROM (usually glibc functions)
 static bool isLongCall(const char *str) {
+  // a super dirty hack for wamr aot precheck functions.
+  const char *prefix = "aot_func_internal#";
+  if (!strncmp(str, prefix, strlen(prefix))) {
+      return false;
+  }
   // Currently always use long calls
   return true;
 }
