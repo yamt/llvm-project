@@ -1016,7 +1016,7 @@ bool WebAssemblyLowerEmscriptenEHSjLj::runOnModule(Module &M) {
 
       // Register testSetjmp function
       FTy = FunctionType::get(Int32Ty,
-                              {getAddrIntType(&M), Int32PtrTy, Int32Ty}, false);
+                              {Int32PtrTy, Int32PtrTy, Int32Ty}, false);
       TestSetjmpF = getEmscriptenFunction(FTy, "testSetjmp", &M);
 
       // wasm.catch() will be lowered down to wasm 'catch' instruction in
@@ -1738,9 +1738,9 @@ void WebAssemblyLowerEmscriptenEHSjLj::handleLongjmpableCallsForWasmSjLj(
   BasicBlock *ThenBB = BasicBlock::Create(C, "if.then", &F);
   BasicBlock *EndBB = BasicBlock::Create(C, "if.end", &F);
   Value *EnvP = IRB.CreateBitCast(Env, getAddrPtrType(&M), "env.p");
-  Value *SetjmpID = IRB.CreateLoad(getAddrIntType(&M), EnvP, "setjmp.id");
+  //Value *SetjmpID = IRB.CreateLoad(getAddrIntType(&M), EnvP, "setjmp.id");
   Value *Label =
-      IRB.CreateCall(TestSetjmpF, {SetjmpID, SetjmpTable, SetjmpTableSize},
+      IRB.CreateCall(TestSetjmpF, {EnvP, SetjmpTable, SetjmpTableSize},
                      OperandBundleDef("funclet", CatchPad), "label");
   Value *Cmp = IRB.CreateICmpEQ(Label, IRB.getInt32(0));
   IRB.CreateCondBr(Cmp, ThenBB, EndBB);
