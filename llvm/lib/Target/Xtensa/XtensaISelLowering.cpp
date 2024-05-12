@@ -1395,6 +1395,7 @@ XtensaTargetLowering::LowerCall(CallLoweringInfo &CLI,
 
   std::string name;
   unsigned char TF = 0;
+  bool UseLongCall = true;
 
   // Accept direct calls by converting symbolic call addresses to the
   // associated Target* opcodes.
@@ -1414,9 +1415,14 @@ XtensaTargetLowering::LowerCall(CallLoweringInfo &CLI,
 
     const GlobalValue *GV = G->getGlobal();
     name = GV->getName().str();
+    if (auto *F = dyn_cast<Function>(GV)) {
+      if (F->hasFnAttribute("short-call")) {
+        UseLongCall = false;
+      }
+    }
   }
 
-  if ((!name.empty()) && isLongCall(name.c_str())) {
+  if (UseLongCall && ((!name.empty()) && isLongCall(name.c_str()))) {
     // Create a constant pool entry for the callee address
     XtensaCP::XtensaCPModifier Modifier = XtensaCP::no_modifier;
 
